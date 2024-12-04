@@ -6,17 +6,34 @@ import styles from "../ui/login.module.css";
 import Image from "next/image";
 import kleiderschrankIcon from "../ui/images/closet-svgrepo-com.svg";
 import googleIcon from "../ui/images/google-color-svgrepo-com.svg";
+import { redirect } from "next/navigation";
+import { loggedIn } from "../context/auth";
+import { useRouter } from "next/navigation";
 
 const roboto = Roboto({
   subsets: ["latin"],
   weight: "400",
 });
 
-export default function Home() {
+export default function Login() {
+  const router = useRouter();
+
+  if (loggedIn()) {
+    redirect("/kleiderschrank");
+  }
+
+  /**
+   * performs login and redirect to main page
+   */
   const handleGoogleSignIn = async () => {
     try {
-      const user = await signInWithGoogle();
-      console.log("Logged in user:", user);
+      await signInWithGoogle();
+      // const user = await signInWithGoogle();
+      // console.log("Logged in user:", user);
+      // const token = await user.getIdToken();
+      // console.log("idToken:", token);
+      // console.log("refreshtoken:", user.refreshToken);
+      router.push("/kleiderschrank");
     } catch (error) {
       console.error("Sign-In error:", error);
     }
@@ -50,7 +67,6 @@ export default function Home() {
           </button>
         </div>
       </div>
-      {/* <button onClick={handleLogOut}>Log Out</button> */}
     </main>
   );
 }
